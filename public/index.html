@@ -15,27 +15,54 @@
         <p class="tagline">Remote Browser - Browse any website</p>
       </header>
 
-      <form id="start-form" class="url-form">
-        <div class="input-group">
-          <input
-            type="text"
-            id="start-url"
-            placeholder="Enter URL (e.g., tiktok.com)"
-            required
-            autocomplete="off"
-            spellcheck="false"
-          >
-          <button type="submit">Browse</button>
-        </div>
-      </form>
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" data-tab="browse">Browse</button>
+        <button class="tab" data-tab="games">Games</button>
+      </div>
 
-      <div class="quick-links">
-        <h3>Quick Links</h3>
-        <div class="links">
-          <a href="#" data-url="https://www.tiktok.com">TikTok</a>
-          <a href="#" data-url="https://www.google.com">Google</a>
-          <a href="#" data-url="https://www.youtube.com">YouTube</a>
-          <a href="#" data-url="https://www.instagram.com">Instagram</a>
+      <!-- Browse Tab -->
+      <div id="browse-tab" class="tab-content active">
+        <form id="start-form" class="url-form">
+          <div class="input-group">
+            <input
+              type="text"
+              id="start-url"
+              placeholder="Enter URL (e.g., tiktok.com)"
+              required
+              autocomplete="off"
+              spellcheck="false"
+            >
+            <button type="submit">Browse</button>
+          </div>
+        </form>
+
+        <div class="quick-links">
+          <h3>Quick Links</h3>
+          <div class="links">
+            <a href="#" data-url="https://www.tiktok.com">TikTok</a>
+            <a href="#" data-url="https://www.google.com">Google</a>
+            <a href="#" data-url="https://www.youtube.com">YouTube</a>
+            <a href="#" data-url="https://www.instagram.com">Instagram</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Games Tab -->
+      <div id="games-tab" class="tab-content">
+        <div class="games-header">
+          <input type="text" id="game-search" placeholder="Search games...">
+          <select id="game-filter">
+            <option value="all">All Games</option>
+            <option value="action">Action</option>
+            <option value="racing">Racing</option>
+            <option value="io">IO Games</option>
+            <option value="sports">Sports</option>
+            <option value="puzzle">Puzzle</option>
+          </select>
+        </div>
+        <div id="games-grid" class="games-grid">
+          <!-- Games populated by JS -->
         </div>
       </div>
     </div>
