@@ -11,7 +11,7 @@ class BrowserManager {
   async init() {
     if (this.browser) return;
 
-    this.browser = await puppeteer.launch({
+    const launchOptions = {
       headless: true,
       args: [
         '--no-sandbox',
@@ -20,8 +20,17 @@ class BrowserManager {
         '--disable-accelerated-2d-canvas',
         '--disable-gpu',
         '--window-size=1920,1080',
+        '--single-process',
+        '--no-zygote',
       ],
-    });
+    };
+
+    // Use system Chromium if specified (for Docker/container environments)
+    if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+      launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+    }
+
+    this.browser = await puppeteer.launch(launchOptions);
 
     // Clean up inactive sessions periodically
     setInterval(() => this.cleanupSessions(), 60000);
