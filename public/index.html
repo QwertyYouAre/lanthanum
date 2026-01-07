@@ -3,23 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lanthanum - Web Proxy</title>
+  <title>Lanthanum - Remote Browser</title>
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
   <div class="container">
-    <header>
-      <h1>Lanthanum</h1>
-      <p class="tagline">Fast, lightweight web proxy</p>
-    </header>
+    <!-- Start Screen -->
+    <div id="start-screen" class="start-screen">
+      <header>
+        <h1>Lanthanum</h1>
+        <p class="tagline">Remote Browser - Browse any website</p>
+      </header>
 
-    <main>
-      <form id="proxy-form" class="url-form">
+      <form id="start-form" class="url-form">
         <div class="input-group">
           <input
             type="text"
-            id="url-input"
-            placeholder="Enter URL (e.g., https://example.com)"
+            id="start-url"
+            placeholder="Enter URL (e.g., tiktok.com)"
             required
             autocomplete="off"
             spellcheck="false"
@@ -31,17 +32,47 @@
       <div class="quick-links">
         <h3>Quick Links</h3>
         <div class="links">
+          <a href="#" data-url="https://www.tiktok.com">TikTok</a>
           <a href="#" data-url="https://www.google.com">Google</a>
-          <a href="#" data-url="https://www.wikipedia.org">Wikipedia</a>
-          <a href="#" data-url="https://www.github.com">GitHub</a>
-          <a href="#" data-url="https://www.reddit.com">Reddit</a>
+          <a href="#" data-url="https://www.youtube.com">YouTube</a>
+          <a href="#" data-url="https://www.instagram.com">Instagram</a>
         </div>
       </div>
-    </main>
+    </div>
 
-    <footer>
-      <p>Powered by Lanthanum Proxy</p>
-    </footer>
+    <!-- Browser Screen -->
+    <div id="browser-screen" class="browser-screen hidden">
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="nav-buttons">
+          <button id="btn-back" title="Back">←</button>
+          <button id="btn-forward" title="Forward">→</button>
+          <button id="btn-refresh" title="Refresh">↻</button>
+          <button id="btn-home" title="Home">⌂</button>
+        </div>
+        <div class="url-bar">
+          <input type="text" id="url-input" placeholder="Enter URL...">
+          <button id="btn-go">Go</button>
+        </div>
+        <div class="status">
+          <span id="page-title">Loading...</span>
+        </div>
+      </div>
+
+      <!-- Browser View -->
+      <div id="browser-view" class="browser-view">
+        <div id="loading" class="loading">
+          <div class="spinner"></div>
+          <p>Loading...</p>
+        </div>
+        <img id="browser-image" alt="Browser view" draggable="false">
+      </div>
+
+      <!-- Instructions -->
+      <div class="instructions">
+        Click to interact • Scroll with mouse wheel • Type when focused on input
+      </div>
+    </div>
   </div>
 
   <script src="/app.js"></script>
