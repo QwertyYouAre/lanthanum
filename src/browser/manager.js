@@ -20,8 +20,9 @@ class BrowserManager {
         '--disable-accelerated-2d-canvas',
         '--disable-gpu',
         '--window-size=1920,1080',
-        '--single-process',
-        '--no-zygote',
+        '--disable-web-security',
+        '--disable-features=IsolateOrigins,site-per-process',
+        '--disable-site-isolation-trials',
       ],
     };
 

@@ -181,6 +181,24 @@ body {
   font-size: 1.1rem;
 }
 
+.rotating-tip {
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-top: 1rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+
+.rotating-tip:hover {
+  background: var(--surface-light);
+  border-color: var(--primary);
+}
+
 .url-form {
   background: var(--surface);
   padding: 1.5rem;
@@ -188,17 +206,19 @@ body {
   border: 1px solid var(--border);
   width: 100%;
   max-width: 500px;
+  margin: 0 auto;
 }
 
 .input-group {
   display: flex;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .input-group input {
-  flex: 1;
-  padding: 0.875rem 1rem;
-  font-size: 1rem;
+  width: 100%;
+  padding: 1rem 1.25rem;
+  font-size: 1.1rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--bg);
@@ -211,14 +231,16 @@ body {
 }
 
 .input-group button {
-  padding: 0.875rem 1.5rem;
-  font-size: 1rem;
+  padding: 1.25rem 2.5rem;
+  font-size: 1.25rem;
   font-weight: 600;
   background: var(--primary);
   color: white;
   border: none;
   border-radius: var(--radius);
   cursor: pointer;
+  align-self: center;
+  min-width: 200px;
 }
 
 .input-group button:hover {

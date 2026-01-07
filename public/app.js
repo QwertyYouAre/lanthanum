@@ -342,19 +342,19 @@ class RemoteBrowser {
 
     try {
       const timestamp = Date.now();
-      this.elements.browserImage.src = `/api/session/${this.sessionId}/screenshot?t=${timestamp}&quality=85`;
+      this.elements.browserImage.src = `/api/session/${this.sessionId}/screenshot?t=${timestamp}&quality=90`;
     } catch (error) {
       console.error('Screenshot error:', error);
     }
   }
 
   startRefreshLoop() {
-    // Refresh screenshot every 500ms for smooth updates
+    // Refresh screenshot every 100ms for smooth updates
     this.refreshInterval = setInterval(() => {
       if (!this.isLoading) {
         this.refreshScreenshot();
       }
-    }, 500);
+    }, 100);
   }
 
   stopRefreshLoop() {
@@ -538,7 +538,33 @@ class RemoteBrowser {
   }
 }
 
+// Rotating tips
+const TIPS = [
+  "Michael is the worst Tuba",
+  "Neevthegreat Proxylover loves proxies",
+  "KatyISD you cant stop me lol",
+  "Lanthanum is the best element",
+  "2.9 Minerloon is the best clash deck"
+];
+
+function initRotatingTips() {
+  const tipElement = document.getElementById('rotating-tip');
+  if (!tipElement) return;
+
+  let lastIndex = -1;
+
+  tipElement.addEventListener('click', () => {
+    let newIndex;
+    do {
+      newIndex = Math.floor(Math.random() * TIPS.length);
+    } while (newIndex === lastIndex && TIPS.length > 1);
+    lastIndex = newIndex;
+    tipElement.textContent = TIPS[newIndex];
+  });
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
   new RemoteBrowser();
+  initRotatingTips();
 });
