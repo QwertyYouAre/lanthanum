@@ -5,8 +5,12 @@ importScripts('/uv/uv.sw.js');
 const sw = new UVServiceWorker();
 
 self.addEventListener('fetch', (event) => {
-  // Only handle requests that start with the UV prefix
-  if (event.request.url.startsWith(location.origin + __uv$config.prefix)) {
-    event.respondWith(sw.fetch(event));
-  }
+  event.respondWith(
+    (async () => {
+      if (event.request.url.startsWith(location.origin + __uv$config.prefix)) {
+        return await sw.fetch(event);
+      }
+      return await fetch(event.request);
+    })()
+  );
 });
