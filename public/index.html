@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lanthanum - Remote Browser</title>
+  <title>Lanthanum - Web Proxy</title>
   <link rel="stylesheet" href="/styles.css">
+  <script src="/uv/uv.bundle.js"></script>
+  <script src="/uv/uv.config.js"></script>
 </head>
 <body>
   <div class="container">
@@ -12,7 +14,7 @@
     <div id="start-screen" class="start-screen">
       <header>
         <h1>Lanthanum</h1>
-        <p class="tagline">Remote Browser - Browse any website</p>
+        <p class="tagline">Web Proxy - Browse any website</p>
         <p id="rotating-tip" class="rotating-tip">Click for a tip!</p>
       </header>
 
@@ -20,6 +22,7 @@
       <div class="tabs">
         <button class="tab active" data-tab="browse">Browse</button>
         <button class="tab" data-tab="games">Games</button>
+        <button class="tab" data-tab="settings">Settings</button>
       </div>
 
       <!-- Browse Tab -->
@@ -29,7 +32,7 @@
             <input
               type="text"
               id="start-url"
-              placeholder="Enter URL (e.g., tiktok.com)"
+              placeholder="Enter URL (e.g., google.com)"
               required
               autocomplete="off"
               spellcheck="false"
@@ -69,43 +72,46 @@
           <!-- Games populated by JS -->
         </div>
       </div>
-    </div>
 
-    <!-- Browser Screen -->
-    <div id="browser-screen" class="browser-screen hidden">
-      <!-- Toolbar -->
-      <div class="toolbar">
-        <div class="nav-buttons">
-          <button id="btn-back" title="Back">←</button>
-          <button id="btn-forward" title="Forward">→</button>
-          <button id="btn-refresh" title="Refresh">↻</button>
-          <button id="btn-home" title="Home">⌂</button>
-        </div>
-        <div class="url-bar">
-          <input type="text" id="url-input" placeholder="Enter URL...">
-          <button id="btn-go">Go</button>
-        </div>
-        <div class="status">
-          <span id="page-title">Loading...</span>
-        </div>
-      </div>
+      <!-- Settings Tab -->
+      <div id="settings-tab" class="tab-content">
+        <div class="settings-panel">
+          <h2>Settings</h2>
 
-      <!-- Browser View -->
-      <div id="browser-view" class="browser-view">
-        <div id="loading" class="loading">
-          <div class="spinner"></div>
-          <p>Loading...</p>
-        </div>
-        <img id="browser-image" alt="Browser view" draggable="false">
-      </div>
+          <div class="setting-group">
+            <label>Theme</label>
+            <div class="theme-options">
+              <button class="theme-btn active" data-theme="dark">Dark</button>
+              <button class="theme-btn" data-theme="light">Light</button>
+              <button class="theme-btn" data-theme="midnight">Midnight</button>
+              <button class="theme-btn" data-theme="purple">Purple</button>
+            </div>
+          </div>
 
-      <!-- Instructions -->
-      <div class="instructions">
-        Click to interact • Scroll with mouse wheel • Type when focused on input
+          <div class="setting-group">
+            <label>About:Blank Mode</label>
+            <p class="setting-desc">Open the site inside an about:blank tab for extra stealth</p>
+            <div class="toggle-container">
+              <label class="toggle">
+                <input type="checkbox" id="aboutblank-toggle">
+                <span class="toggle-slider"></span>
+              </label>
+              <span id="aboutblank-status">Disabled</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <script src="/app.js"></script>
+  <script>
+    // Register service worker for Ultraviolet
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js', { scope: '/' })
+        .then(reg => console.log('Service Worker registered'))
+        .catch(err => console.error('Service Worker registration failed:', err));
+    }
+  </script>
 </body>
 </html>

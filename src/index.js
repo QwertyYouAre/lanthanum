@@ -1,35 +1,31 @@
 import { createServer } from './server.js';
-import { browserManager } from './browser/manager.js';
 
 const PORT = process.env.PORT || 3000;
 
 async function start() {
-  // Initialize browser
-  await browserManager.init();
+  const server = createServer();
 
-  const app = createServer();
-
-  app.listen(PORT, () => {
+  server.listen(PORT, () => {
     console.log(`
   ╦  ┌─┐┌┐┌┌┬┐┬ ┬┌─┐┌┐┌┬ ┬┌┬┐
   ║  ├─┤│││ │ ├─┤├─┤││││ ││││
   ╩═╝┴ ┴┘└┘ ┴ ┴ ┴┴ ┴┘└┘└─┘┴ ┴
 
-  Remote Browser v2.0.0
+  Ultraviolet Proxy v3.0.0
   Running on port ${PORT}
   Visit http://localhost:${PORT} to start browsing
     `);
   });
 
   // Graceful shutdown
-  process.on('SIGINT', async () => {
+  process.on('SIGINT', () => {
     console.log('\nShutting down...');
-    await browserManager.shutdown();
+    server.close();
     process.exit(0);
   });
 
-  process.on('SIGTERM', async () => {
-    await browserManager.shutdown();
+  process.on('SIGTERM', () => {
+    server.close();
     process.exit(0);
   });
 }
