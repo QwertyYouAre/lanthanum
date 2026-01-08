@@ -1,3 +1,72 @@
+// Particle Animation
+class ParticleBackground {
+  constructor() {
+    this.canvas = document.getElementById('particles');
+    if (!this.canvas) return;
+
+    this.ctx = this.canvas.getContext('2d');
+    this.particles = [];
+    this.particleCount = 80;
+
+    this.resize();
+    this.createParticles();
+    this.animate();
+
+    window.addEventListener('resize', () => this.resize());
+  }
+
+  resize() {
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+  }
+
+  createParticles() {
+    this.particles = [];
+    for (let i = 0; i < this.particleCount; i++) {
+      this.particles.push({
+        x: Math.random() * this.canvas.width,
+        y: Math.random() * this.canvas.height,
+        size: Math.random() * 3 + 1,
+        speedX: Math.random() * 0.5 + 0.2,
+        speedY: Math.random() * 0.8 + 0.3,
+        opacity: Math.random() * 0.5 + 0.2
+      });
+    }
+  }
+
+  animate() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    // Get background color from CSS
+    const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#1a1a1a';
+    this.ctx.fillStyle = bgColor;
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+    // Draw particles
+    this.particles.forEach(particle => {
+      this.ctx.beginPath();
+      this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+      this.ctx.fillStyle = `rgba(255, 255, 255, ${particle.opacity})`;
+      this.ctx.fill();
+
+      // Move particle down and to the right
+      particle.x += particle.speedX;
+      particle.y += particle.speedY;
+
+      // Reset particle if it goes off screen
+      if (particle.x > this.canvas.width + 10) {
+        particle.x = -10;
+      }
+      if (particle.y > this.canvas.height + 10) {
+        particle.y = -10;
+        particle.x = Math.random() * this.canvas.width;
+      }
+    });
+
+    requestAnimationFrame(() => this.animate());
+  }
+}
+
 // Games data - source: playernation (pn) and gn-math (gn)
 const GAMES = [
   // === ACTION GAMES ===
@@ -295,16 +364,23 @@ function initRotatingTips() {
   const tipElement = document.getElementById('rotating-tip');
   if (!tipElement) return;
 
-  let lastIndex = -1;
+  let currentIndex = 0;
 
-  tipElement.addEventListener('click', () => {
-    let newIndex;
-    do {
-      newIndex = Math.floor(Math.random() * TIPS.length);
-    } while (newIndex === lastIndex && TIPS.length > 1);
-    lastIndex = newIndex;
-    tipElement.textContent = TIPS[newIndex];
-  });
+  function showNextTip() {
+    currentIndex = (currentIndex + 1) % TIPS.length;
+    tipElement.style.opacity = '0';
+    setTimeout(() => {
+      tipElement.textContent = 'tip: ' + TIPS[currentIndex];
+      tipElement.style.opacity = '1';
+    }, 300);
+  }
+
+  // Auto-rotate every 4 seconds
+  setInterval(showNextTip, 4000);
+
+  // Also allow click to change tip
+  tipElement.addEventListener('click', showNextTip);
+  tipElement.style.transition = 'opacity 0.3s ease';
 }
 
 // Settings Manager
@@ -419,6 +495,7 @@ class SettingsManager {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+  new ParticleBackground();
   new LanthanumProxy();
   initRotatingTips();
   new SettingsManager();
