@@ -357,14 +357,19 @@ const TIPS = [
   "Neevthegreat Proxylover loves proxies",
   "KatyISD you cant stop me lol",
   "Lanthanum is the best element",
-  "2.9 Minerloon is the best clash deck"
+  "2.9 Minerloon is the best clash deck",
+  "deli meat",
+  "vegetable soup"
 ];
 
 function initRotatingTips() {
   const tipElement = document.getElementById('rotating-tip');
   if (!tipElement) return;
 
-  let currentIndex = 0;
+  let currentIndex = Math.floor(Math.random() * TIPS.length);
+
+  // Show random tip on load
+  tipElement.textContent = 'tip: ' + TIPS[currentIndex];
 
   function showNextTip() {
     currentIndex = (currentIndex + 1) % TIPS.length;
