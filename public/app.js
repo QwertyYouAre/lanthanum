@@ -192,9 +192,40 @@ class LanthanumProxy {
 
     // Encode URL using Ultraviolet
     const encodedUrl = __uv$config.prefix + __uv$config.encodeUrl(url);
+    const fullUrl = window.location.origin + encodedUrl;
 
-    // Navigate to proxied URL
-    window.location.href = encodedUrl;
+    // Check if about:blank mode is enabled
+    const settings = JSON.parse(localStorage.getItem('lanthanum-settings') || '{}');
+    if (settings.aboutBlank) {
+      // Open in about:blank iframe
+      const win = window.open('about:blank', '_blank');
+      if (win) {
+        win.document.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Lanthanum</title>
+            <style>
+              * { margin: 0; padding: 0; }
+              html, body { height: 100%; overflow: hidden; }
+              iframe { width: 100%; height: 100%; border: none; }
+            </style>
+          </head>
+          <body>
+            <iframe src="${fullUrl}"></iframe>
+          </body>
+          </html>
+        `);
+        win.document.close();
+      } else {
+        // Popup blocked, fall back to normal navigation
+        alert('Please allow popups for about:blank mode to work');
+        window.location.href = encodedUrl;
+      }
+    } else {
+      // Navigate to proxied URL normally
+      window.location.href = encodedUrl;
+    }
   }
 
   switchTab(tabName) {
@@ -331,9 +362,6 @@ class SettingsManager {
         this.saveSettings();
       });
     }
-
-    // Check if we should open in about:blank on load
-    this.checkAboutBlank();
   }
 
   setTheme(theme) {
@@ -352,45 +380,6 @@ class SettingsManager {
       document.documentElement.removeAttribute('data-theme');
     } else {
       document.documentElement.setAttribute('data-theme', theme);
-    }
-  }
-
-  checkAboutBlank() {
-    // If about:blank is enabled and we're not already in an about:blank page
-    if (this.settings.aboutBlank && window.location.href !== 'about:blank' && !window.frameElement) {
-      // Check if we've already opened in about:blank this session
-      if (!sessionStorage.getItem('lanthanum-aboutblank-opened')) {
-        this.openInAboutBlank();
-      }
-    }
-  }
-
-  openInAboutBlank() {
-    // Mark that we're opening in about:blank
-    sessionStorage.setItem('lanthanum-aboutblank-opened', 'true');
-
-    // Open a new about:blank tab with our page in an iframe
-    const newWindow = window.open('about:blank', '_blank');
-    if (newWindow) {
-      newWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>Lanthanum</title>
-          <style>
-            * { margin: 0; padding: 0; }
-            html, body { height: 100%; overflow: hidden; }
-            iframe { width: 100%; height: 100%; border: none; }
-          </style>
-        </head>
-        <body>
-          <iframe src="${window.location.href}"></iframe>
-        </body>
-        </html>
-      `);
-      newWindow.document.close();
-      // Close the original tab
-      window.close();
     }
   }
 }
