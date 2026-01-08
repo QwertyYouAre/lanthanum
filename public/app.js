@@ -384,6 +384,39 @@ class SettingsManager {
   }
 }
 
+// Auto about:blank - runs immediately before page renders
+(function() {
+  const settings = JSON.parse(localStorage.getItem('lanthanum-settings') || '{}');
+
+  // Check if about:blank is enabled and we're not already in an iframe
+  if (settings.aboutBlank && !window.frameElement && window.self === window.top) {
+    // Open about:blank with this page in an iframe
+    const win = window.open('about:blank', '_blank');
+    if (win) {
+      win.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Lanthanum</title>
+          <style>
+            * { margin: 0; padding: 0; }
+            html, body { height: 100%; overflow: hidden; }
+            iframe { width: 100%; height: 100%; border: none; }
+          </style>
+        </head>
+        <body>
+          <iframe src="${window.location.href}"></iframe>
+        </body>
+        </html>
+      `);
+      win.document.close();
+      // Replace current page with a message
+      document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0f172a;color:#f8fafc;font-family:sans-serif;"><p>Lanthanum opened in about:blank tab. You can close this tab.</p></div>';
+      document.title = 'Close this tab';
+    }
+  }
+})();
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
   new LanthanumProxy();
