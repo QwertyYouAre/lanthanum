@@ -271,7 +271,7 @@ class LanthanumProxy {
         let gameUrl;
 
         if (source === 'gn') {
-          gameUrl = GAME_SOURCES.gn;
+          gameUrl = `${GAME_SOURCES.gn}/${slug}`;
         } else {
           gameUrl = `${GAME_SOURCES.pn}/${slug}`;
         }
