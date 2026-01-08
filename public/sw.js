@@ -6,6 +6,6 @@ const uv = new UVServiceWorker();
 
 self.addEventListener('fetch', (event) => {
   if (uv.route(event)) {
-    return uv.fetch(event);
+    event.respondWith(uv.fetch(event));
   }
 });
