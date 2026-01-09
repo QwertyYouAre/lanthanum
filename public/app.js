@@ -269,20 +269,23 @@ class LanthanumProxy {
       // Open about:blank and inject iframe via DOM manipulation
       const win = window.open('about:blank', '_blank');
       if (win) {
-        // Set up the document structure
-        win.document.open();
-        win.document.write('<!DOCTYPE html><html><head><title>Lanthanum</title></head><body></body></html>');
-        win.document.close();
+        // Use setTimeout to ensure the window is ready
+        setTimeout(() => {
+          // Set document title
+          win.document.title = 'Lanthanum';
 
-        // Add styles
-        const style = win.document.createElement('style');
-        style.textContent = '* { margin: 0; padding: 0; } html, body { height: 100%; overflow: hidden; } iframe { width: 100%; height: 100%; border: none; }';
-        win.document.head.appendChild(style);
+          // Add styles directly to head
+          const style = win.document.createElement('style');
+          style.textContent = '* { margin: 0; padding: 0; } html, body { height: 100%; overflow: hidden; background: #1a1a1a; } iframe { width: 100%; height: 100%; border: none; }';
+          win.document.head.appendChild(style);
 
-        // Create and add iframe
-        const iframe = win.document.createElement('iframe');
-        iframe.src = fullUrl;
-        win.document.body.appendChild(iframe);
+          // Create and add iframe
+          const iframe = win.document.createElement('iframe');
+          iframe.src = fullUrl;
+          iframe.setAttribute('allowfullscreen', 'true');
+          iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-forms allow-popups allow-modals allow-downloads');
+          win.document.body.appendChild(iframe);
+        }, 0);
       } else {
         // Popup blocked, fall back to normal navigation
         alert('Please allow popups for about:blank mode to work');
