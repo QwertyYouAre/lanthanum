@@ -497,6 +497,14 @@ class SettingsManager {
     } else {
       localStorage.removeItem('lanthanum-useragent');
     }
+
+    // Notify service worker of user-agent change
+    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({
+        type: 'SET_USER_AGENT',
+        userAgent: userAgent || null
+      });
+    }
   }
 
   applyTheme(theme) {

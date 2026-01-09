@@ -156,9 +156,21 @@
 
     // Register service worker for Ultraviolet
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js', { scope: '/' })
-        .then(reg => console.log('Service Worker registered'))
-        .catch(err => console.error('Service Worker registration failed:', err));
+      const reg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+      console.log('Service Worker registered');
+      
+      // Send custom user-agent to service worker
+      if (customUA) {
+        // Wait for the service worker to be ready
+        const sw = reg.active || reg.waiting || reg.installing;
+        if (sw) {
+          sw.postMessage({ type: 'SET_USER_AGENT', userAgent: customUA });
+        }
+        // Also send to any already-active service worker
+        if (navigator.serviceWorker.controller) {
+          navigator.serviceWorker.controller.postMessage({ type: 'SET_USER_AGENT', userAgent: customUA });
+        }
+      }
     }
   </script>
 </body>
