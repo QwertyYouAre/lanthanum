@@ -89,6 +89,18 @@
           </div>
 
           <div class="setting-group">
+            <label>Browser Emulation</label>
+            <p class="setting-desc">Emulate a different browser's user-agent for better compatibility</p>
+            <div class="browser-options">
+              <button class="browser-btn active" data-browser="default">Default</button>
+              <button class="browser-btn" data-browser="brave">Brave</button>
+              <button class="browser-btn" data-browser="chrome">Chrome</button>
+              <button class="browser-btn" data-browser="firefox">Firefox</button>
+              <button class="browser-btn" data-browser="edge">Edge</button>
+            </div>
+          </div>
+
+          <div class="setting-group">
             <label>About:Blank Mode</label>
             <p class="setting-desc">Open the site inside an about:blank tab for extra stealth</p>
             <div class="toggle-container">
@@ -105,7 +117,23 @@
   </div>
 
   <script src="/app.js"></script>
-  <script>
+  <script type="module">
+    // Initialize bare-mux connection and transport
+    import { BareMuxConnection } from '/baremux/index.mjs';
+
+    const connection = new BareMuxConnection('/baremux/worker.js');
+
+    // Get custom user-agent from settings if set
+    const settings = JSON.parse(localStorage.getItem('lanthanum-settings') || '{}');
+    const customUA = localStorage.getItem('lanthanum-useragent');
+    
+    // Set the bare-as-module3 transport with optional custom headers
+    const transportOptions = [location.origin + '/bare/'];
+    if (customUA) {
+      transportOptions.push({ headers: { 'User-Agent': customUA } });
+    }
+    await connection.setTransport('/baremod/index.mjs', transportOptions);
+
     // Register service worker for Ultraviolet
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js', { scope: '/' })

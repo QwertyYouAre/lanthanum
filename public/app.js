@@ -266,26 +266,23 @@ class LanthanumProxy {
     // Check if about:blank mode is enabled
     const settings = JSON.parse(localStorage.getItem('lanthanum-settings') || '{}');
     if (settings.aboutBlank) {
-      // Open in about:blank iframe
+      // Open about:blank and inject iframe via DOM manipulation
       const win = window.open('about:blank', '_blank');
       if (win) {
-        win.document.write(`
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <title>Lanthanum</title>
-            <style>
-              * { margin: 0; padding: 0; }
-              html, body { height: 100%; overflow: hidden; }
-              iframe { width: 100%; height: 100%; border: none; }
-            </style>
-          </head>
-          <body>
-            <iframe src="${fullUrl}"></iframe>
-          </body>
-          </html>
-        `);
+        // Set up the document structure
+        win.document.open();
+        win.document.write('<!DOCTYPE html><html><head><title>Lanthanum</title></head><body></body></html>');
         win.document.close();
+
+        // Add styles
+        const style = win.document.createElement('style');
+        style.textContent = '* { margin: 0; padding: 0; } html, body { height: 100%; overflow: hidden; } iframe { width: 100%; height: 100%; border: none; }';
+        win.document.head.appendChild(style);
+
+        // Create and add iframe
+        const iframe = win.document.createElement('iframe');
+        iframe.src = fullUrl;
+        win.document.body.appendChild(iframe);
       } else {
         // Popup blocked, fall back to normal navigation
         alert('Please allow popups for about:blank mode to work');
@@ -362,6 +359,15 @@ const TIPS = [
   "vegetable soup"
 ];
 
+// Browser user-agent strings
+const BROWSER_USER_AGENTS = {
+  default: null,  // Use browser's default
+  brave: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Brave/120',
+  chrome: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+  firefox: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0',
+  edge: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0'
+};
+
 function initRotatingTips() {
   const tipElement = document.getElementById('rotating-tip');
   if (!tipElement) return;
@@ -396,11 +402,13 @@ class SettingsManager {
   }
 
   loadSettings() {
-    const saved = localStorage.getItem('lanthanum-settings');
-    return saved ? JSON.parse(saved) : {
+    const defaults = {
       theme: 'dark',
-      aboutBlank: false
+      aboutBlank: false,
+      browser: 'default'
     };
+    const saved = localStorage.getItem('lanthanum-settings');
+    return saved ? { ...defaults, ...JSON.parse(saved) } : defaults;
   }
 
   saveSettings() {
@@ -422,6 +430,20 @@ class SettingsManager {
 
       btn.addEventListener('click', () => {
         this.setTheme(btn.dataset.theme);
+      });
+    });
+
+    // Browser buttons
+    document.querySelectorAll('.browser-btn').forEach(btn => {
+      // Mark saved browser as active
+      if (btn.dataset.browser === this.settings.browser) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+
+      btn.addEventListener('click', () => {
+        this.setBrowser(btn.dataset.browser);
       });
     });
 
@@ -454,6 +476,24 @@ class SettingsManager {
     document.querySelectorAll('.theme-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.theme === theme);
     });
+  }
+
+  setBrowser(browser) {
+    this.settings.browser = browser;
+    this.saveSettings();
+
+    // Update active button
+    document.querySelectorAll('.browser-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.browser === browser);
+    });
+
+    // Store user-agent in localStorage for the proxy to use
+    const userAgent = BROWSER_USER_AGENTS[browser];
+    if (userAgent) {
+      localStorage.setItem('lanthanum-useragent', userAgent);
+    } else {
+      localStorage.removeItem('lanthanum-useragent');
+    }
   }
 
   applyTheme(theme) {

@@ -525,6 +525,36 @@ body {
   border-color: var(--primary);
 }
 
+/* Browser Options */
+.browser-options {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.browser-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: var(--bg);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.browser-btn:hover {
+  background: var(--surface-light);
+  color: var(--text);
+}
+
+.browser-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
 /* Toggle Switch */
 .toggle-container {
   display: flex;

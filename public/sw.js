@@ -15,6 +15,14 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  const url = event.request.url;
+
+  // Debug logging
+  if (url.includes('/service/')) {
+    console.log('[SW] Intercepting:', url);
+    console.log('[SW] Route match:', uv.route(event));
+  }
+
   if (uv.route(event)) {
     event.respondWith(uv.fetch(event));
   }

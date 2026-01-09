@@ -1,5 +1,7 @@
 import express from 'express';
 import { createBareServer } from '@tomphttp/bare-server-node';
+import { baremuxPath } from '@mercuryworkshop/bare-mux/node';
+import { bareModulePath } from '@mercuryworkshop/bare-as-module3';
 import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
@@ -41,6 +43,10 @@ export function createServer() {
     if (req.method === 'OPTIONS') return res.sendStatus(200);
     next();
   });
+
+  // Bare-mux and transport static files
+  app.use('/baremux/', express.static(baremuxPath));
+  app.use('/baremod/', express.static(bareModulePath));
 
   // Static files
   app.use(express.static(path.join(__dirname, '../public')));
