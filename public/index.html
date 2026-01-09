@@ -117,6 +117,26 @@
   </div>
 
   <script src="/app.js"></script>
+  <script>
+    // Intercept fetch to add custom user-agent header for bare server requests
+    (function() {
+      const originalFetch = window.fetch;
+      window.fetch = function(url, options) {
+        const customUA = localStorage.getItem('lanthanum-useragent');
+        options = options || {};
+
+        if (customUA && typeof url === 'string' && url.includes('/bare/')) {
+          options.headers = options.headers || {};
+          if (options.headers instanceof Headers) {
+            options.headers.set('X-Lanthanum-UA', customUA);
+          } else {
+            options.headers['X-Lanthanum-UA'] = customUA;
+          }
+        }
+        return originalFetch.call(this, url, options);
+      };
+    })();
+  </script>
   <script type="module">
     // Initialize bare-mux connection and transport
     import { BareMuxConnection } from '/baremux/index.mjs';
@@ -126,7 +146,7 @@
     // Get custom user-agent from settings if set
     const settings = JSON.parse(localStorage.getItem('lanthanum-settings') || '{}');
     const customUA = localStorage.getItem('lanthanum-useragent');
-    
+
     // Set the bare-as-module3 transport with optional custom headers
     const transportOptions = [location.origin + '/bare/'];
     if (customUA) {
